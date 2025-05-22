@@ -1,27 +1,33 @@
-#Install packages needed
-packages = c('ggtern', 'plotly', 'readr', 'dplyr', 'tidyr')
+########################################## Load and install packages ################################
 
-for(p in packages){
-  if(!require(p, character.only = T)){
-    install.packages(p)
-  }
-  library(p, character.only = T)
+# List of required packages
+packages <- c(
+  'ggtern', 'plotly', 'readr', 'dplyr', 'tidyr', 'ggpubr', 'ggplot2'
+)
+
+# Install any missing packages
+installed <- packages %in% rownames(installed.packages())
+if (any(!installed)) {
+  install.packages(packages[!installed])
 }
 
+# Load all packages
+invisible(lapply(packages, library, character.only = TRUE))
 
-#Open packages
-library(ggplot2)
-library("ggtern")
-library(dplyr)
-library(tidyverse)
-library(dplyr)
-library(readxl)
-require(ggpubr)
-library(plotly)
+# Ensure specific version of ggplot2 for compatibility with ggpubr
+if (packageVersion("ggplot2") != "3.2.1") {
+  devtools::install_version("ggplot2", version = "3.2.1", repos = "http://cran.us.r-project.org")
+}
 
-#Import Dataset
-ManganeseData_ForRCode <- read_excel("Ternary_digrams/ManganeseData_ForRCode.xlsx")
+##################### Loading data ###################
 
+#set directory to export plots
+setwd("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Ternary_diagrams")
+
+#Bringing in datasheet
+Full_Data <- read_excel("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_plotting.xlsx", 
+                        sheet = "Data")
+########################################################
 #If filtering data - do here
 Full_Data<-filter(ManganeseData_ForRCode,
                   Type=="Marine") #add in whatever column and catergory you want to filter by

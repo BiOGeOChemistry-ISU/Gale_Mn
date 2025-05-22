@@ -12,7 +12,7 @@ for(p in packages){
 install_version("ggplot2", version = "3.2.1", repos = "http://cran.us.r-project.org")
 
 require("ggpubr")
-require(devtools)
+require("devtools")
 require("readxl")
 require("dplyr")
 
