@@ -80,19 +80,6 @@ ppm <- c("Cu",
          "Ni",
          "Zn")
 
-All_Data <- All_Data %>%
-  mutate(across(all_of(ppm), ~ as.numeric(.x)))
-
-
-All_Data <- All_Data %>%
-  mutate(
-    Fe_ppm = Fe * 10000,
-    Mn_ppm = Mn * 10000
-  )
-
-
-All_Data <- All_Data %>%
-  mutate(Co_Cu_Ni = 10*(Co + Ni + Cu))
 
 #################################### Filtering dataset #############################################
 
@@ -105,7 +92,19 @@ All_Data <- Full_Data %>%
       Pathway %in% c("Gale crater", "Mixed", "Hydrogenetic", "Diagenetic")
   )
 
+All_Data <- All_Data %>%
+  mutate(across(all_of(ppm), ~ as.numeric(.x)))
 
+
+All_Data <- All_Data %>%
+  mutate(
+    Fe_ppm = Fe * 10000,
+    Mn_ppm = Mn * 10000
+  )
+
+
+All_Data <- All_Data %>%
+  mutate(Co_Cu_Ni = 10*(Co + Ni + Cu)) 
 
 #To set order of legend - important step as this will also organize the order that you assign colors
 All_Data$Pathway <- factor(All_Data$Pathway,levels = c("Diagenetic","Hydrogenetic","Mixed","Freshwater", "Carbonates", "Gale crater"))
@@ -144,7 +143,7 @@ CoCuNi_Fe_Mn=ggtern(data=All_Data,aes(x=Fe_ppm, y=Co_Cu_Ni, z=Mn_ppm))
 
 #ternary plot - plotting by Formation (splits marine into:hydrogenetic, diagenetic, mixed)
 CoCuNi_Fe_Mn_formation<- CoCuNi_Fe_Mn + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
-  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","#404788FF","Black"))+
+  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","grey","Black"))+
   scale_shape_manual(values=c(0, 1, 2, 3,18,2))+
   labs(shape="",color="", x="Fe",
        y="10*(Co+Cu+Ni)",
@@ -166,7 +165,7 @@ CoCuZn=ggtern(data=All_Data,aes(x=Cu, y=Co, z=Zn))
 
 #ternary plot - plotting by Formation (splits marine into:hydrogenetic, diagenetic, mixed)
 CoCuZn_formation<- CoCuZn + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
-  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","#404788FF","Black"))+
+  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","grey","Black"))+
   scale_shape_manual(values=c(0, 1, 2, 3,18,2))+
   labs(shape="",color="", x="Cu",
        y="Co",
@@ -189,9 +188,9 @@ CoCuZn_formation
 
 # Arrange the plots
 combined_plot <- ggarrange(
-  MgFeMn_species, CoCuNi_Fe_Mn_formation, CoCuZn_formation,
-  labels = c("A.", "B.", "C."),
-  ncol = 3, nrow = 1,
+  MgFeMn_species, CoCuZn_formation,
+  labels = c("A.", "B."),
+  ncol = 2, nrow = 1,
   common.legend = TRUE,
   legend = "bottom"
 )

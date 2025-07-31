@@ -413,6 +413,24 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
   library(rstatix)
   library(dplyr)
   
+  
+  # Define the desired order of x-axis categories
+  desired_order <- c("Carbonates", "Freshwater", "Hydrogenetic", "Diagenetic", "Mixed") # Customize this!
+  
+  # Filter and set factor levels
+  data <- data %>%
+    filter(!is.na(.data[[y_var]])) %>%
+    mutate(Pathway = factor(Pathway, levels = desired_order))
+  
+  
+  # Check for sufficient data
+  if (nrow(data) < 5 || length(unique(data$Pathway)) < 2) {
+    return(ggplot() +
+             annotate("text", x = 1, y = 1, label = paste("Insufficient data for", y_label)) +
+             theme_void())
+  }
+  
+  # Plot
   p <- ggboxplot(
     data, x = "Pathway", y = y_var,
     ylab = y_label, xlab = NULL,
@@ -431,6 +449,10 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
     p <- p +
       stat_pvalue_manual(posthoc, tip.length = 0) +
       labs(subtitle = NULL)
+    
+    
+    print(kruskal_result)
+    
   }
   
   return(p)
@@ -482,15 +504,22 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
   library(rstatix)
   library(dplyr)
   
-  
+
   # Filter out rows with NA in the y_var column
   data <- data %>% filter(!is.na(.data[[y_var]]))
   
-
+  # Define the desired order of x-axis categories
+  desired_order <- c("Carbonates", "Freshwater", "Marine", "Gale crater") # Customize this!
   
-  # Check if there's enough data to plot
+  # Filter and set factor levels
+  data <- data %>%
+    filter(!is.na(.data[[y_var]])) %>%
+    mutate(Formation = factor(Formation, levels = desired_order))
+  
+  
+  # Check for sufficient data
   if (nrow(data) < 5 || length(unique(data$Formation)) < 2) {
-    return(ggplot() + 
+    return(ggplot() +
              annotate("text", x = 1, y = 1, label = paste("Insufficient data for", y_label)) +
              theme_void())
   }
@@ -547,116 +576,5 @@ ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
 dev.off()
 
 
-# this code is to fix the issue with y-axis but it isn't working
-
-plot_kruskal_boxplot <- function(data, y_var, y_label) {
-  library(ggplot2)
-  library(dplyr)
-  library(rstatix)
-  library(ggsignif)
-  
-  # Base plot using ggplot instead of ggboxplot
-  p <- ggplot(data, aes(x = Pathway, y = .data[[y_var]])) +
-    geom_boxplot() +
-    geom_jitter(width = 0.2, alpha = 0.5) +
-    labs(y = y_label, x = NULL)
-  
-  # Kruskal-Wallis test
-  kruskal_result <- data %>%
-    kruskal_test(as.formula(paste(y_var, "~ Pathway")))
-  
-  if (kruskal_result$p < 0.05) {
-    posthoc <- data %>%
-      pairwise_wilcox_test(as.formula(paste(y_var, "~ Pathway")), p.adjust.method = "BH") %>%
-      filter(p.adj < 0.05)
-    
-    if (nrow(posthoc) > 0) {
-      comparisons <- posthoc %>%
-        select(group1, group2) %>%
-        as.list() %>%
-        transpose()
-      
-      y_max <- max(data[[y_var]], na.rm = TRUE)
-      y_positions <- seq(y_max * 1.05, by = 0.1, length.out = length(comparisons))
-      
-      p <- p +
-        geom_signif(
-          comparisons = comparisons,
-          annotations = formatC(posthoc$p.adj, format = "e", digits = 2),
-          y_position = y_positions,
-          tip_length = 0.01,
-          textsize = 3
-        )
-    }
-  }
-  
-  return(p)
-}
 
 
-# Generate plots
-bxp_FwM_Ba  <- plot_kruskal_boxplot(All_Data, "Ba", "Ba")
-bxp_FwM_Fe  <- plot_kruskal_boxplot(All_Data, "Fe", "Fe")
-bxp_FwM_Li  <- plot_kruskal_boxplot(All_Data, "Li", "Li")
-bxp_FwM_MgO <- plot_kruskal_boxplot(All_Data, "MgO", "MgO")
-bxp_FwM_Mn  <- plot_kruskal_boxplot(All_Data, "Mn", "Mn")
-bxp_FwM_Sr  <- plot_kruskal_boxplot(All_Data, "Sr", "Sr")
-
-# Format plots for layout
-plots <- list(
-  bxp_FwM_Ba + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Fe + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Li + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_MgO + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Mn + labs(x = NULL) + theme(axis.text.x = element_text(size = 9)),
-  bxp_FwM_Sr + labs(x = NULL) + theme(axis.text.x = element_text(size = 9))
-)
-
-
-# Save to PDF
-pdf("All_Boxplots.pdf", width = 8.5, height = 11)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
-dev.off()
-
-
-
-
-
-
-
-# Function to generate annotated boxplot
-create_annotated_plot <- function(data, yvar, ylab_text) {
-  p <- ggboxplot(data, x = "Pathway", y = yvar,
-                 ylab = ylab_text, xlab = NULL, add = "jitter")
-  
-  posthoc <- data %>%
-    tukey_hsd(as.formula(paste(yvar, "~ Pathway"))) %>%
-    add_significance() %>%
-    add_xy_position(x = "Pathway")
-  
-  p + stat_pvalue_manual(posthoc, tip.length = 0) +
-    labs(subtitle = NULL)
-}
-
-# Create plots
-bxp_FwM_Ba   <- create_annotated_plot(All_Data, "log_Ba_M_Mn", "log Ba/Mn")
-bxp_FwM_Fe   <- create_annotated_plot(All_Data, "log_Fe_M_Mn", "log Fe/Mn")
-bxp_FwM_Li   <- create_annotated_plot(All_Data, "log_Li_M_Mn", "log Li/Mn")
-bxp_FwM_MgO  <- create_annotated_plot(All_Data, "log_MgO_M_Mn", "log MgO/Mn")
-bxp_FwM_Mn   <- create_annotated_plot(All_Data, "log_Mn_M", "log Mn")
-bxp_FwM_Sr   <- create_annotated_plot(All_Data, "log_Sr_M_Mn", "log Sr/Mn")
-
-# Format plots for layout
-plots <- list(
-  bxp_FwM_Ba + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Fe + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Li + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_MgO + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
-  bxp_FwM_Mn + labs(x = NULL) + theme(axis.text.x = element_text(size = 9)),
-  bxp_FwM_Sr + labs(x = NULL) + theme(axis.text.x = element_text(size = 9))
-)
-
-# Save to PDF
-pdf("All_Boxplots.pdf", width = 8.5, height = 11)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
-dev.off()

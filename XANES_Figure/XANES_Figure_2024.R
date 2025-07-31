@@ -8,8 +8,11 @@ library(readxl)
 require(ggpubr)
 library(plotly)
 
+# Set WD
+setwd("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/XANES_Figure")
+
 # Import dataset
-XANES <- read_excel("XANES_Figure/XANES.xlsx")
+XANES <- read_excel("XANES.xlsx")
 
 
 Range_Data_Mn<-filter(XANES,eV>6520 & eV<6600)
