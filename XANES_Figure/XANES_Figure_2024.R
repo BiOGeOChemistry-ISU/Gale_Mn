@@ -84,3 +84,5 @@ XANES
 #save plot in WD as pdf with dimensions that you want
 ggsave("XANES.pdf", device = "pdf", plot=XANES, width=50, height=90, units="mm") 
 
+#save plot in WD as pdf with dimensions that you want
+ggsave("XANES.jpeg", device = "jpeg", plot=XANES, width=50, height=90, units="mm") 

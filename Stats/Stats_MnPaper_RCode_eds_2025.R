@@ -142,6 +142,7 @@ All_Data<-bind_rows(Carbonates, Oxides, Gale)
 
 # Open PDF device with 8.5 x 11 inches (portrait)
 pdf("Oxides_Histograms.pdf", width = 8.5, height = 11)
+jpeg("Oxides_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid (4 rows, 3 columns)
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
@@ -195,10 +196,13 @@ text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
 dev.off()
 
 
+
+
 ################ CARBONATES normality plots ##################################
 
 # Open PDF device with 8.5 x 11 inches (portrait)
 pdf("Carbonates_Histograms.pdf", width = 8.5, height = 11)
+jpeg("Carbonates_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
@@ -260,6 +264,7 @@ Oxides_Freshwater <- Oxides %>%
 
 # Open PDF device
 pdf("Oxides_Freshwater_Histograms.pdf", width = 8.5, height = 11)
+jpeg("Oxides_Freshwater_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
@@ -321,6 +326,7 @@ Oxides_Marine <- Oxides %>%
 
 # Open PDF device
 pdf("Oxides_Marine_Histograms.pdf", width = 8.5, height = 11)
+jpeg("Oxides_Marine_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
@@ -495,6 +501,9 @@ pdf("Terrestrial_Boxplots.pdf", width = 8.5, height = 11)
 ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
 dev.off()
 
+jpeg("Terrestrial_Boxplots.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+dev.off()
 
 ################################# Boxplots with stats for all #####################################
 
@@ -575,6 +584,8 @@ pdf("All_Boxplots.pdf", width = 8.5, height = 11)
 ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
 dev.off()
 
-
+jpeg("All_Boxplots.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+dev.off()
 
 

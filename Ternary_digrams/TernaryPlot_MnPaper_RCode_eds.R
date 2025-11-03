@@ -198,3 +198,9 @@ combined_plot <- ggarrange(
 # Save to PDF
 ggsave("Ternary.pdf", combined_plot, width = 8.5, height = 4, units = "in")
 
+# Save as TIFF
+ggsave("Ternary.tiff", combined_plot, width = 8.5, height = 4, units = "in", dpi = 300)
+
+# Save as JPEG
+ggsave("Ternary.jpeg", combined_plot, width = 8.5, height = 4, units = "in", dpi = 300)
+
