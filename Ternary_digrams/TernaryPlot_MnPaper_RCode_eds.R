@@ -26,13 +26,13 @@ if (packageVersion("ggplot2") != "3.2.1") {
 setwd("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Ternary_digrams")
 
 #Bringing in datasheet
-Full_Data <- read_excel("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_plotting.xlsx", 
-                        sheet = "Data")
+Full_Data <- read_csv("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_withcategoricals.csv")
 
 ########################################### unit conversions #########################################
 
 #convert to numeric
 wtpct <- c("Fe",
+           "Mn",
            "FeO",
            "Fe2O3",
            "MnO",
@@ -74,23 +74,23 @@ Full_Data <- Full_Data %>%
     Mgx10 = Mg * 10 # Multiply Mg by 10
   )
 
+
+#################################### Filtering dataset #############################################
+
+All_Data <- Full_Data %>%
+  filter(
+    (Mn_species == "carbonate" & Pathway == "Carbonates") |
+      (Mn_species == "oxide" & Formation %in% c("Freshwater", "Marine")) |
+      Pathway %in% c("Gale crater", "Mixed", "Hydrogenetic", "Diagenetic")
+  )
+
+
+
 #convert to numeric
 ppm <- c("Cu",
          "Co",
          "Ni",
          "Zn")
-
-
-#################################### Filtering dataset #############################################
-
-
-
-All_Data <- Full_Data %>%
-  filter(
-    Mn_species == "carbonate" |
-      (Mn_species == "oxide" & Formation %in% c("Freshwater", "Marine")) |
-      Pathway %in% c("Gale crater", "Mixed", "Hydrogenetic", "Diagenetic")
-  )
 
 All_Data <- All_Data %>%
   mutate(across(all_of(ppm), ~ as.numeric(.x)))
@@ -134,7 +134,6 @@ MgFeMn_species
 
 
 ################################################# Conly ########################################################
-
 
 
 #Base Ternary Plot

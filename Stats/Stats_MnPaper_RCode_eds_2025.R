@@ -27,8 +27,7 @@ if (packageVersion("ggplot2") != "3.2.1") {
 setwd("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Stats")
 
 #Bringing in datasheet
-Full_Data <- read_excel("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_plotting.xlsx", 
-                        sheet = "Data")
+Full_Data <- read_csv("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_withcategoricals.csv")
 
 
 ########################################### unit conversions #########################################
@@ -106,7 +105,7 @@ Full_Data <- Full_Data %>%
 #################################### Filtering dataset #############################################
 
 #CARBONATES
-Carbonates<-filter(Full_Data,Mn_species=="carbonate") #filtering
+Carbonates<-filter(Full_Data,Mn_species=="carbonate" & Pathway=="Carbonates") #filtering
 
 Carbonates <- Carbonates %>%
   mutate(
@@ -142,7 +141,6 @@ All_Data<-bind_rows(Carbonates, Oxides, Gale)
 
 # Open PDF device with 8.5 x 11 inches (portrait)
 pdf("Oxides_Histograms.pdf", width = 8.5, height = 11)
-jpeg("Oxides_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid (4 rows, 3 columns)
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
@@ -195,14 +193,64 @@ text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
 # Close the PDF device
 dev.off()
 
+# Open JPEG device with 8.5 x 11 inches (portrait)
+jpeg("Oxides_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
+# Set up a 4x3 plotting grid (4 rows, 3 columns)
+par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
 
+# Variables and labels
+vars <- c("log_Ba_M_Mn", "log_Co_M_Mn", "log_Cu_M_Mn", "log_Fe_M_Mn",
+          "log_Li_M_Mn", "log_MgO_M_Mn", "log_Mn_M", "log_Mo_M_Mn",
+          "log_Ni_M_Mn", "log_Sr_M_Mn", "log_Zn_M_Mn")  # 11 variables
+
+labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
+            "log Li/Mn", "log Mg/Mn", "log Mn", "log Mo/Mn",
+            "log Ni/Mn", "log Sr/Mn", "log Zn/Mn")
+
+# Loop through each variable
+for (i in seq_along(vars)) {
+  var <- vars[i]
+  label <- labels[i]
+  data <- as.numeric(Oxides[[var]])
+  
+  # Run Shapiro-Wilk test
+  test <- shapiro.test(data)
+  W <- round(test$statistic, 4)
+  p <- format.pval(test$p.value, digits = 4, eps = .Machine$double.eps)
+  
+  # Plot histogram
+  hist(data,
+       xlab = label,
+       main = paste0("\nW = ", W, ", p = ", p))
+}
+
+# Use the 12th panel for the caption
+plot.new()
+text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
+     labels = paste(
+       "Supplementary Figure 2.\n",
+       "Shapiro-Wilk test for the log\n",
+       "normal distribution of moles\n",
+       "per kg Mn and trace elements\n",
+       "(Ba, Co, Cu, Fe, Li, Mg, Mo,\n",
+       "Ni, Sr, Zn) normalized to Mn\n",
+       "in Mn-(oxyhydr)oxides.\n",
+       "W values above 0.9 are\n",
+       "indicative of a log normal\n",
+       "distribution and p-values less\n",
+       "than 0.05 indicate the null\n",
+       "hypothesis can be rejected.",
+       sep = ""
+     ))
+
+# Close the JPEG device
+dev.off()
 
 ################ CARBONATES normality plots ##################################
 
 # Open PDF device with 8.5 x 11 inches (portrait)
 pdf("Carbonates_Histograms.pdf", width = 8.5, height = 11)
-jpeg("Carbonates_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
@@ -256,6 +304,60 @@ text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
 dev.off()
 
 
+# Open JPEG device with 8.5 x 11 inches (portrait)
+jpeg("Carbonates_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+
+# Set up a 4x3 plotting grid
+par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))  # Standard margins
+
+# Alphabetized list of variables and labels
+vars <- c("log_Ba_M_Mn", "log_Co_M_Mn", "log_Cu_M_Mn", "log_Fe_M_Mn",
+          "log_Li_M_Mn", "log_MgO_M_Mn", "log_Mn_M", "log_Mo_M_Mn",
+          "log_Ni_M_Mn", "log_Sr_M_Mn", "log_Zn_M_Mn")  # 11 variables
+
+labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
+            "log Li/Mn", "log Mg/Mn", "log Mn", "log Mo/Mn",
+            "log Ni/Mn", "log Sr/Mn", "log Zn/Mn")
+
+# Loop through each variable
+for (i in seq_along(vars)) {
+  var <- vars[i]
+  label <- labels[i]
+  data <- as.numeric(Carbonates[[var]])  # Ensure numeric
+  
+  # Run Shapiro-Wilk test
+  test <- shapiro.test(data)
+  W <- round(test$statistic, 4)
+  p <- format.pval(test$p.value, digits = 4, eps = .Machine$double.eps)
+  
+  # Plot histogram
+  hist(data,
+       xlab = label,
+       main = paste0("\nW = ", W, ", p = ", p))
+}
+
+# Use the 12th panel for the caption
+plot.new()
+text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
+     labels = paste(
+       "Supplementary Figure 3.\n",
+       "Shapiro-Wilk test for the log\n",
+       "normal distribution of moles per\n",
+       "kg Mn and trace elements\n",
+       "(Ba, Co, Cu, Fe, Li, Mg, Mo,\n",
+       "Ni, Sr, Zn) normalized to Mn in\n",
+       "carbonates. W values\n",
+       "above 0.9 are indicative of a\n",
+       "log normal distribution and\n",
+       "p-values less than 0.05 indicate\n",
+       "the null hypothesis can\n",
+       "be rejected.",
+       sep = ""
+     ))
+
+# Close the JPEG device
+dev.off()
+
 ##################### FRESHWATER normality plots ###############
 
 # Filter the Oxides dataframe for Freshwater only
@@ -264,7 +366,6 @@ Oxides_Freshwater <- Oxides %>%
 
 # Open PDF device
 pdf("Oxides_Freshwater_Histograms.pdf", width = 8.5, height = 11)
-jpeg("Oxides_Freshwater_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
@@ -317,6 +418,59 @@ text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
 # Close the PDF device
 dev.off()
 
+# Open JPEG device
+jpeg("Oxides_Freshwater_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+
+# Set up a 4x3 plotting grid
+par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
+
+# Alphabetized list of variables and labels
+vars <- c("log_Ba_M_Mn", "log_Co_M_Mn", "log_Cu_M_Mn", "log_Fe_M_Mn",
+          "log_Li_M_Mn", "log_MgO_M_Mn", "log_Mn_M", "log_Mo_M_Mn",
+          "log_Ni_M_Mn", "log_Sr_M_Mn", "log_Zn_M_Mn")  # Replace with your 12th variable
+
+labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
+            "log Li/Mn", "log Mg/Mn", "log Mn", "log Mo/Mn",
+            "log Ni/Mn", "log Sr/Mn", "log Zn/Mn")  # Match labels
+
+# Loop through each variable
+for (i in seq_along(vars)) {
+  var <- vars[i]
+  label <- labels[i]
+  data <- as.numeric(Oxides_Freshwater[[var]])  # Ensure numeric
+  
+  # Run Shapiro-Wilk test
+  test <- shapiro.test(data)
+  W <- round(test$statistic, 4)
+  p <- format.pval(test$p.value, digits = 4, eps = .Machine$double.eps)
+  
+  # Plot histogram
+  hist(data,
+       xlab = label,
+       main = paste0("\nW = ", W, ", p = ", p))
+}
+
+# Use the 12th panel for the caption
+plot.new()
+text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
+     labels = paste(
+       "Supplementary Figure 4.\n",
+       "Shapiro-Wilk test for the log\n",
+       "normal distribution of moles per\n",
+       "kg Mn and trace elements\n",
+       "(Ba, Co, Cu, Fe, Li, Mg, Mo,\n",
+       "Ni, Sr, Zn) normalized to Mn in\n",
+       "freshwater Mn-(oxyhydr)oxides.\n",
+       "W values above 0.9 are indicative\n",
+       "of a log normal distribution and\n",
+       "p-values less than 0.05 indicate\n",
+       "the null hypothesis can\n",
+       "be rejected.",
+       sep = ""
+     ))
+
+# Close the JPEG device
+dev.off()
 
 ##################### MARINE normality plots ################################
 
@@ -326,7 +480,6 @@ Oxides_Marine <- Oxides %>%
 
 # Open PDF device
 pdf("Oxides_Marine_Histograms.pdf", width = 8.5, height = 11)
-jpeg("Oxides_Marine_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
 
 # Set up a 4x3 plotting grid
 par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
@@ -379,6 +532,59 @@ text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
 # Close the PDF device
 dev.off()
 
+# Open JPEG device
+jpeg("Oxides_Marine_Histograms.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+
+# Set up a 4x3 plotting grid
+par(mfrow = c(4, 3), mar = c(4, 4, 4, 2))
+
+# Alphabetized list of variables and labels
+vars <- c("log_Ba_M_Mn", "log_Co_M_Mn", "log_Cu_M_Mn", "log_Fe_M_Mn",
+          "log_Li_M_Mn", "log_MgO_M_Mn", "log_Mn_M", "log_Mo_M_Mn",
+          "log_Ni_M_Mn", "log_Sr_M_Mn", "log_Zn_M_Mn")  # Replace with your 12th variable
+
+labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
+            "log Li/Mn", "log Mg/Mn", "log Mn", "log Mo/Mn",
+            "log Ni/Mn", "log Sr/Mn", "log Zn/Mn")  # Match labels
+
+# Loop through each variable
+for (i in seq_along(vars)) {
+  var <- vars[i]
+  label <- labels[i]
+  data <- as.numeric(Oxides_Freshwater[[var]])  # Ensure numeric
+  
+  # Run Shapiro-Wilk test
+  test <- shapiro.test(data)
+  W <- round(test$statistic, 4)
+  p <- format.pval(test$p.value, digits = 4, eps = .Machine$double.eps)
+  
+  # Plot histogram
+  hist(data,
+       xlab = label,
+       main = paste0("\nW = ", W, ", p = ", p))
+}
+
+# Use the 12th panel for the caption
+plot.new()
+text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
+     labels = paste(
+       "Supplementary Figure 5.\n",
+       "Shapiro-Wilk test for the log\n",
+       "normal distribution of moles per\n",
+       "kg Mn and trace elements\n",
+       "(Ba, Co, Cu, Fe, Li, Mg, Mo,\n",
+       "Ni, Sr, Zn) normalized to Mn in\n",
+       "marine Mn-(oxyhydr)oxides.\n",
+       "W values above 0.9 are indicative\n",
+       "of a log normal distribution and\n",
+       "p-values less than 0.05 indicate\n",
+       "the null hypothesis can\n",
+       "be rejected.",
+       sep = ""
+     ))
+
+# Close the JPEG device
+dev.off()
 
 ################################# Boxplots with stats for Terrestrial #####################################
 
