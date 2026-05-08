@@ -169,7 +169,10 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -223,7 +226,10 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -279,7 +285,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -334,7 +342,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -394,7 +404,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -448,7 +460,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -508,7 +522,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -562,7 +578,9 @@ for (i in seq_along(vars)) {
   hist(data,
        xlab = label,
        main = paste0("\nW = ", W, ", p = ", p))
+  mtext(LETTERS[i], side = 3, adj = 0, line = 1, cex = 1.2, font = 2)
 }
+
 
 # Use the 12th panel for the caption
 plot.new()
@@ -686,13 +704,16 @@ bxp_FwM_Zn <- plot_kruskal_boxplot(Oxides_Carbonates, "log_Zn_M_Mn", "log Zn/Mn"
 
 
 # Remove x-axis text, ticks, and label from the top 3 plots
-plots <- list(
+plots3 <- list(
   bxp_FwM_Ba + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Co + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Cu + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Fe + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Li + labs(x = NULL) + theme(axis.text.x = element_text(size = 9)),
-  bxp_FwM_Mg + labs(x = NULL) + theme(axis.text.x = element_text(size = 9)),
+  bxp_FwM_Mg + labs(x = NULL) + theme(axis.text.x = element_text(size = 9))
+)
+  
+plots4 <- list(
   bxp_FwM_Mn + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Mo + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
   bxp_FwM_Ni + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + labs(x = NULL),
@@ -700,17 +721,55 @@ plots <- list(
   bxp_FwM_Zn + labs(x = NULL) + theme(axis.text.x = element_text(size = 9))
 )
 
+plots4_filled <- c(plots4, list(NULL))
 
 
 # Arrange and save to PDF
-pdf("Terrestrial_Boxplots.pdf", width = 8.5, height = 11)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+pdf("Terrestrial_Boxplots3.pdf", width = 8.5, height = 11)
+ggarrange(plotlist = plots3, 
+          ncol = 2, 
+          nrow = 3, 
+          align = "v", 
+          labels = LETTERS[1:6],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98
+)
 dev.off()
 
-jpeg("Terrestrial_Boxplots.jpeg", width = 8.5, height = 11, units = "in", res = 300)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+# Arrange and save to PDF
+pdf("Terrestrial_Boxplots4.pdf", width = 8.5, height = 11)
+ggarrange(plotlist = plots4_filled, 
+          ncol = 2, nrow = 3, 
+          align = "v", 
+          labels = LETTERS[1:6],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98
+)
 dev.off()
 
+jpeg("Terrestrial_Boxplots3.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+ggarrange(plotlist = plots3, 
+          ncol = 2, 
+          nrow = 3, 
+          align = "v",
+          labels = LETTERS[1:6],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98)
+dev.off()
+
+jpeg("Terrestrial_Boxplots4.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+ggarrange(plotlist = plots4_filled,
+          ncol = 2, 
+          nrow = 3, 
+          align = "v",
+          labels = LETTERS[1:5],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98)
+dev.off()
 ################################# Boxplots with stats for all #####################################
 
 # Define the reusable function
@@ -787,11 +846,26 @@ plots <- list(
 
 # Save to PDF
 pdf("All_Boxplots.pdf", width = 8.5, height = 11)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+ggarrange(plotlist = plots, 
+          ncol = 2, 
+          nrow = 3, 
+          align = "v", 
+          labels = LETTERS[1:6],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98
+)
 dev.off()
 
 jpeg("All_Boxplots.jpeg", width = 8.5, height = 11, units = "in", res = 300)
-ggarrange(plotlist = plots, ncol = 2, nrow = 3, align = "v")
+ggarrange(plotlist = plots, 
+          ncol = 2, 
+          nrow = 3, 
+          align = "v", 
+          labels = LETTERS[1:6],
+          font.label = list(size = 12, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98)
 dev.off()
 
 

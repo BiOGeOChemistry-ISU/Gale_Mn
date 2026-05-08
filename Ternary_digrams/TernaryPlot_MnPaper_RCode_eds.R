@@ -113,11 +113,12 @@ All_Data$Pathway <- factor(All_Data$Pathway,levels = c("Diagenetic","Hydrogeneti
 #Base Ternary Plot
   #add in elements you want to plot in this line (make sure to have the correct dataset)
 MgFeMn = ggtern(data=All_Data,aes(x=Mgx10, y=Fe, z=Mn))
+MgFeMn_alt = ggtern(data=All_Data,aes(x=Mg, y=Fe, z=Mn))
 
   #ternary plot - plotting by Mn-species
 MgFeMn_species <- MgFeMn + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
-  scale_color_manual(values = c("#404788FF","#1F968BFF","#FDE725FF","#55C667FF","grey","black"))+
-  scale_shape_manual(values=c(0, 1, 2, 3,18,2))+
+  scale_color_manual(values = c("#404788FF","#1F968BFF","#FDE725FF","#55C667FF","#E64B35FF","black"))+
+  scale_shape_manual(values=c(0, 1, 2, 3, 8, 2))+
   labs(shape="",color="",
        x="10xMg",
        y="Fe",
@@ -127,12 +128,28 @@ MgFeMn_species <- MgFeMn + geom_point(aes(color=Pathway, shape=Pathway),size=1,s
   theme_hidetitles()+
   theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
-        legend.text = element_text(size = 8),
+        legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
         legend.background = element_rect(fill = "transparent", color = NA))
 MgFeMn_species
 
-
+#alternate ternary plot - with no 10xMg
+MgFeMn_species2 <- MgFeMn_alt + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
+  scale_color_manual(values = c("#404788FF","#1F968BFF","#FDE725FF","#55C667FF","#E64B35FF","black"))+
+  scale_shape_manual(values=c(0, 1, 2, 3, 8, 2))+
+  labs(shape="",color="",
+       x="Mg",
+       y="Fe",
+       z="Mn")+
+  theme_void()+
+  theme_showarrows()+
+  theme_hidetitles()+
+  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
+  theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
+        legend.text = element_text(size = 9),
+        legend.justification = c(0, 1), legend.box.just = "left", 
+        legend.background = element_rect(fill = "transparent", color = NA))
+MgFeMn_species2
 ################################################# Conly ########################################################
 
 
@@ -142,8 +159,8 @@ CoCuNi_Fe_Mn=ggtern(data=All_Data,aes(x=Fe_ppm, y=Co_Cu_Ni, z=Mn_ppm))
 
 #ternary plot - plotting by Formation (splits marine into:hydrogenetic, diagenetic, mixed)
 CoCuNi_Fe_Mn_formation<- CoCuNi_Fe_Mn + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
-  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","grey","Black"))+
-  scale_shape_manual(values=c(0, 1, 2, 3,18,2))+
+  scale_color_manual(values = c("#404788FF","#1F968BFF","#FDE725FF","#55C667FF","#E64B35FF","Black"))+
+  scale_shape_manual(values=c(0, 1, 2, 3, 8, 2))+
   labs(shape="",color="", x="Fe",
        y="10*(Co+Cu+Ni)",
        z="Mn")+
@@ -152,7 +169,7 @@ CoCuNi_Fe_Mn_formation<- CoCuNi_Fe_Mn + geom_point(aes(color=Pathway, shape=Path
   theme_hidetitles()+
   theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
-        legend.text = element_text(size = 8),
+        legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
         legend.background = element_rect(fill = "transparent", color = NA))
 CoCuNi_Fe_Mn_formation
@@ -164,8 +181,8 @@ CoCuZn=ggtern(data=All_Data,aes(x=Cu, y=Co, z=Zn))
 
 #ternary plot - plotting by Formation (splits marine into:hydrogenetic, diagenetic, mixed)
 CoCuZn_formation<- CoCuZn + geom_point(aes(color=Pathway, shape=Pathway),size=1,stroke=1)+
-  scale_color_manual(values = c("#440154FF","#1F968BFF","#FDE725FF","#55C667FF","grey","Black"))+
-  scale_shape_manual(values=c(0, 1, 2, 3,18,2))+
+  scale_color_manual(values = c("#404788FF","#1F968BFF","#FDE725FF","#55C667FF","#E64B35FF","Black"))+
+  scale_shape_manual(values=c(0, 1, 2, 3, 8, 2))+
   labs(shape="",color="", x="Cu",
        y="Co",
        z="Zn")+
@@ -174,7 +191,7 @@ CoCuZn_formation<- CoCuZn + geom_point(aes(color=Pathway, shape=Pathway),size=1,
   theme_hidetitles()+
   theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
-        legend.text = element_text(size = 8),
+        legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
         legend.background = element_rect(fill = "transparent", color = NA))
 CoCuZn_formation
