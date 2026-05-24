@@ -1,6 +1,7 @@
 
 
 library(readxl)
+library(readr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -11,7 +12,7 @@ library(scales)
 ##################################### Plot LIBS data ######################################
 
 # load terrestrial LIBS data
-df <- read_excel("LIBS/Terrestrial_CSV_LIBS_Averages.xlsx")
+df <- read_excel("Terrestrial_CSV_LIBS_Averages.xlsx")
 
 
 # Define categories
@@ -60,17 +61,7 @@ theme_black_box <- theme_minimal() +
     text = element_text(family = "sans", size = 8)
   )
 
-#define style for log scale
-scale_y_log10(
-  limits = c(0, 0.0005),
-  labels = function(x) {
-    sapply(x, function(val) {
-      exp <- floor(log10(val))
-      base <- val / 10^exp
-      bquote(.(base) %*% 10^.(exp))
-    })
-  }
-)
+
 
 
 # Plot Ba_614
@@ -112,12 +103,12 @@ Ba_455 <- ggplot(filtered_data$Ba_455, aes(x = Wavelength, y = Value, color = Ca
   )) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),          # All text elements
-    axis.title = element_text(size = 8),    # Axis titles
-    axis.text = element_text(size = 8),     # Axis tick labels
-    legend.text = element_text(size = 8),   # Legend text
-    legend.title = element_text(size = 8),  # Legend title
-    plot.title = element_text(size = 8)     # Plot title
+    text = element_text(size = 9),          # All text elements
+    axis.title = element_text(size = 9),    # Axis titles
+    axis.text = element_text(size = 9),     # Axis tick labels
+    legend.text = element_text(size = 9),   # Legend text
+    legend.title = element_text(size = 9),  # Legend title
+    plot.title = element_text(size = 9)     # Plot title
   ) +
   geom_vline(xintercept = 455.53, color = "black", linetype = "solid", size = 1) +
   ylim(0, 0.006)  + # <-- sets y-axis from 0 to 0.005
@@ -140,12 +131,12 @@ Sr_407 <- ggplot(filtered_data$Sr_407, aes(x = Wavelength, y = Value, color = Ca
   )) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),          # All text elements
-    axis.title = element_text(size = 8),    # Axis titles
-    axis.text = element_text(size = 8),     # Axis tick labels
-    legend.text = element_text(size = 8),   # Legend text
-    legend.title = element_text(size = 8),  # Legend title
-    plot.title = element_text(size = 8)     # Plot title
+    text = element_text(size = 9),          # All text elements
+    axis.title = element_text(size = 9),    # Axis titles
+    axis.text = element_text(size = 9),     # Axis tick labels
+    legend.text = element_text(size = 9),   # Legend text
+    legend.title = element_text(size = 9),  # Legend title
+    plot.title = element_text(size = 9)     # Plot title
   ) +
   geom_vline(xintercept = 407.87, color = "black", linetype = "solid", size = 1) +
   ylim(0, 0.006) +  # <-- sets y-axis from 0 to 0.005
@@ -168,12 +159,12 @@ Sr_421 <- ggplot(filtered_data$Sr_421, aes(x = Wavelength, y = Value, color = Ca
   )) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),          # All text elements
-    axis.title = element_text(size = 8),    # Axis titles
-    axis.text = element_text(size = 8),     # Axis tick labels
-    legend.text = element_text(size = 8),   # Legend text
-    legend.title = element_text(size = 8),  # Legend title
-    plot.title = element_text(size = 8)     # Plot title
+    text = element_text(size = 9),          # All text elements
+    axis.title = element_text(size = 9),    # Axis titles
+    axis.text = element_text(size = 9),     # Axis tick labels
+    legend.text = element_text(size = 9),   # Legend text
+    legend.title = element_text(size = 9),  # Legend title
+    plot.title = element_text(size = 9)     # Plot title
   ) +
   geom_vline(xintercept = 421.67, color = "black", linetype = "solid", size = 1) +
   ylim(0, 0.006) +  # <-- sets y-axis from 0 to 0.005
@@ -186,6 +177,18 @@ Sr_421 <- ggplot(filtered_data$Sr_421, aes(x = Wavelength, y = Value, color = Ca
            vjust = 1)
 Sr_421
 
+#define style for log scale
+scale_y_log10(
+  limits = c(0.00001, 0.0005),
+  labels = function(x) {
+    sapply(x, function(val) {
+      exp <- floor(log10(val))
+      base <- val / 10^exp
+      bquote(.(base) %*% 10^.(exp))
+    })
+  }
+)
+
 # Plot Zn_255
 Zn_255 <- ggplot(filtered_data$Zn_255, aes(x = Wavelength, y = Value, color = Category, group = Variable)) +
   geom_line(size = 1) +
@@ -194,31 +197,26 @@ Zn_255 <- ggplot(filtered_data$Zn_255, aes(x = Wavelength, y = Value, color = Ca
     "Terrestrial Mn (oxyhydr)oxides" = "#404788FF",
     "Terrestrial Mn carbonates" = "#E64B35FF"
   )) +
-  scale_y_continuous(
-    limits = c(0, 0.0005),
-    labels = function(x) {
-      parse(text = sapply(x, function(val) {
-        if (val == 0) {
-          "0"
-        } else {
-          exp <- floor(log10(val))
-          base <- signif(val / 10^exp, digits = 2)
-          paste0(base, " %*% 10^", exp)
-        }
-      }))
-    }
+  scale_y_log10(
+    limits = c(1e-5, 5e-4),
+    labels = scales::trans_format(
+      "log10",
+      function(x) {
+        parse(text = paste0("10^", sprintf("%.1f", x)))
+      }
+    )
   ) +
+  coord_cartesian(ylim = c(1e-5, 5e-4)) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),
-    axis.title = element_text(size = 8),
-    axis.text = element_text(size = 8),
-    legend.text = element_text(size = 8),
-    legend.title = element_text(size = 8),
-    plot.title = element_text(size = 8)
+    text = element_text(size = 9),
+    axis.title = element_text(size = 9),
+    axis.text = element_text(size = 9),
+    legend.text = element_text(size = 9),
+    legend.title = element_text(size = 9),
+    plot.title = element_text(size = 9)
   ) +
   geom_vline(xintercept = 255.87, color = "black", linetype = "solid", size = 1) +
-  ylim(0, 0.0005) +  # <-- sets y-axis from 0 to 0.005
   annotate("text",
            x = 253.87,
            y = 0.00048,     # adjust to top of plot
@@ -230,7 +228,8 @@ Zn_255
 
 ################################## Plot ICP-MS data ##################################
 
-df2 <- read_csv("Compiled_Lit_chemistry_v2_withcategoricals.csv")
+df2 <- read_csv("~/Documents/R/BiOGeOChemistry-ISU/Gale_Mn/Compiled_Lit_chemistry_v2_withcategoricals.csv")
+
 
 df2_filtered <- df2 %>%
   filter(Ref == 62, Formation != "", !is.na(Formation))
@@ -274,12 +273,12 @@ Sr <- ggplot(df2_filtered, aes(x = Formation, y = Sr, fill = Formation)) +
   ) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),          # All text elements
-    axis.title = element_text(size = 8),    # Axis titles
-    axis.text = element_text(size = 8),     # Axis tick labels
-    legend.text = element_text(size = 8),   # Legend text
-    legend.title = element_text(size = 8),  # Legend title
-    plot.title = element_text(size = 8)     # Plot title
+    text = element_text(size = 9),          # All text elements
+    axis.title = element_text(size = 9),    # Axis titles
+    axis.text = element_text(size = 9),     # Axis tick labels
+    legend.text = element_text(size = 9),   # Legend text
+    legend.title = element_text(size = 9),  # Legend title
+    plot.title = element_text(size = 9)     # Plot title
   ) 
 Sr
 
@@ -308,12 +307,12 @@ Zn <- ggplot(df2_filtered, aes(x = Formation, y = Zn, fill = Formation)) +
   ) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),          # All text elements
-    axis.title = element_text(size = 8),    # Axis titles
-    axis.text = element_text(size = 8),     # Axis tick labels
-    legend.text = element_text(size = 8),   # Legend text
-    legend.title = element_text(size = 8),  # Legend title
-    plot.title = element_text(size = 8)     # Plot title
+    text = element_text(size = 9),          # All text elements
+    axis.title = element_text(size = 9),    # Axis titles
+    axis.text = element_text(size = 9),     # Axis tick labels
+    legend.text = element_text(size = 9),   # Legend text
+    legend.title = element_text(size = 9),  # Legend title
+    plot.title = element_text(size = 9)     # Plot title
   ) 
 Zn
 
@@ -341,12 +340,12 @@ Ba <- ggplot(df2_filtered, aes(x = Formation, y = Ba, fill = Formation)) +
   ) +
   theme_black_box +
   theme(
-    text = element_text(size = 8),
-    axis.title = element_text(size = 8),
-    axis.text = element_text(size = 8),
-    legend.text = element_text(size = 8),
-    legend.title = element_text(size = 8),
-    plot.title = element_text(size = 8)
+    text = element_text(size = 9),
+    axis.title = element_text(size = 9),
+    axis.text = element_text(size = 9),
+    legend.text = element_text(size = 9),
+    legend.title = element_text(size = 9),
+    plot.title = element_text(size = 9)
   )
 Ba
 
@@ -372,8 +371,8 @@ plots <- ggarrange(
 # Combine plots and legend at bottom-right
 big_plot <- ggdraw() +
   draw_plot(plots, 0, 0, 1, 1) +
-  draw_label("Mn (oxyhydr)oxides", x = 0.765, y = 0.25, size = 9, color = "#404788FF", fontface = "bold") +
-  draw_label("Mn carbonates", x = 0.75, y = 0.2, size = 9, color = "#E64B35FF", fontface = "bold") +
+  draw_label("Mn (oxyhydr)oxides", x = 0.8, y = 0.25, size = 12, color = "#404788FF", fontface = "bold") +
+  draw_label("Mn carbonates", x = 0.8, y = 0.2, size = 12, color = "#E64B35FF", fontface = "bold") +
   draw_plot(legend, 0.7, 0.02, 0.3, 0.15)   # Adjust position and size
 
 big_plot

@@ -47,6 +47,7 @@ Mn_XANES_Carb<-ggplot(Range_Data_Mn_Carb, aes(eV, Adjusted_Norm_Abs, label=Sampl
     size = 2.5,
     show.legend = FALSE
   ) +
+  geom_vline(xintercept = 6539, color= "black", size=0.5) +
   ylim(0, 4.5)+
   scale_color_manual(
     values = c("Black","#E64B35FF","#E64B35FF","#E64B35FF","#E64B35FF","#E64B35FF"),
@@ -92,6 +93,7 @@ Mn_XANES_Oxyhy<-ggplot(Range_Data_Mn_Oxyhy, aes(eV, Adjusted_Norm_Abs, label=Sam
     size = 2.5,
     show.legend = FALSE
   ) +
+  geom_vline(xintercept = 6560.5, color= "black", size=0.5) +
   ylim(0, 3)+
   scale_color_manual(
     values = c("Black","#404788FF","#404788FF","#404788FF"),
@@ -126,12 +128,15 @@ sample_labels_3 <- c(
 )
 
 label_data3 <- Range_Data_Mn_BL |>
-  dplyr::group_by(Type) |>
-  dplyr::slice_max(eV, n = 1) |>
-  dplyr::mutate(Sample_label_3 = sample_labels_3[as.character(Type)])
+  group_by(Type) |>
+  slice_max(eV, n = 1, with_ties = FALSE) |>
+  mutate(Sample_label_3 = sample_labels_3[as.character(Type)])
 
 Mn_XANES_BL <- ggplot(Range_Data_Mn_BL, aes(eV, Adjusted_Norm_Abs, color = Type)) +
   geom_line(size = 0.5) +
+  scale_x_continuous(
+    breaks = seq(6530, 6580, by = 15)  # adjust to your range
+  ) +
   geom_text(
     data = label_data3,
     aes(label = Sample_label_3, color = Type),
@@ -139,12 +144,11 @@ Mn_XANES_BL <- ggplot(Range_Data_Mn_BL, aes(eV, Adjusted_Norm_Abs, color = Type)
     size = 2.5,
     show.legend = FALSE
   ) +
+  geom_vline(xintercept = 6539, color = "black", size = 0.5) +
+  geom_vline(xintercept = 6551, color = "black", size = 0.5) +
   scale_color_manual(
     values = c("Black","#1F968BFF","#1F968BFF","#1F968BFF","#1F968BFF","Black"),
     labels = sample_labels_3
-  ) +
-  scale_x_continuous(
-    breaks = seq(6530, 6580, by = 15)  # adjust to your range
   ) +
   ylim(0, 5.5) +
   coord_cartesian(clip = "off") +

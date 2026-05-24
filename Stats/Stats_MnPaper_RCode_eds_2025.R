@@ -749,7 +749,7 @@ ggarrange(plotlist = plots4_filled,
 )
 dev.off()
 
-jpeg("Terrestrial_Boxplots3.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+tiff("Terrestrial_Boxplots3.tiff", width = 8.5, height = 11, units = "in", res = 300)
 ggarrange(plotlist = plots3, 
           ncol = 2, 
           nrow = 3, 
@@ -760,7 +760,7 @@ ggarrange(plotlist = plots3,
           label.y = 0.98)
 dev.off()
 
-jpeg("Terrestrial_Boxplots4.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+tiff("Terrestrial_Boxplots4.tiff", width = 8.5, height = 11, units = "in", res = 300)
 ggarrange(plotlist = plots4_filled,
           ncol = 2, 
           nrow = 3, 
@@ -857,7 +857,7 @@ ggarrange(plotlist = plots,
 )
 dev.off()
 
-jpeg("All_Boxplots.jpeg", width = 8.5, height = 11, units = "in", res = 300)
+tiff("All_Boxplots.tiff", width = 8.5, height = 11, units = "in", res = 300)
 ggarrange(plotlist = plots, 
           ncol = 2, 
           nrow = 3, 
