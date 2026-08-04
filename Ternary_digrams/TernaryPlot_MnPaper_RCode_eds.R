@@ -84,7 +84,11 @@ All_Data <- Full_Data %>%
       Pathway %in% c("Gale crater", "Mixed", "Hydrogenetic", "Diagenetic")
   )
 
-
+All_Data <- All_Data %>%
+  filter(
+    Pathway != "Gale crater" |
+      MnO >= 0.2
+  )
 
 #convert to numeric
 ppm <- c("Cu",
@@ -124,13 +128,15 @@ MgFeMn_species <- MgFeMn + geom_point(aes(color=Pathway, shape=Pathway),size=1,s
        y="Fe",
        z="Mn")+
   theme_void()+
-  theme_showarrows()+
-  theme_hidetitles()+
-  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
+  #theme_showarrows()+ # incompatible with current ggplot2
+  #theme_hidetitles()+
+  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(0, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
         legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
-        legend.background = element_rect(fill = "transparent", color = NA))
+        legend.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA))
 MgFeMn_species
 
 #alternate ternary plot - with no 10xMg
@@ -142,13 +148,15 @@ MgFeMn_species2 <- MgFeMn_alt + geom_point(aes(color=Pathway, shape=Pathway),siz
        y="Fe",
        z="Mn")+
   theme_void()+
-  theme_showarrows()+
-  theme_hidetitles()+
-  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
+  #theme_showarrows()+ # incompatible with current ggplot2
+  #theme_hidetitles()+
+  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(0, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
         legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
-        legend.background = element_rect(fill = "transparent", color = NA))
+        legend.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA))
 MgFeMn_species2
 ################################################# Conly ########################################################
 
@@ -165,13 +173,15 @@ CoCuNi_Fe_Mn_formation<- CoCuNi_Fe_Mn + geom_point(aes(color=Pathway, shape=Path
        y="10*(Co+Cu+Ni)",
        z="Mn")+
   theme_void()+
-  theme_showarrows()+
-  theme_hidetitles()+
-  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
+  #theme_showarrows()+ # incompatible with current ggplot2
+  #theme_hidetitles()+
+  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(0, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
         legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
-        legend.background = element_rect(fill = "transparent", color = NA))
+        legend.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA))
 CoCuNi_Fe_Mn_formation
 
 ################################################# Trace ########################################################
@@ -187,20 +197,19 @@ CoCuZn_formation<- CoCuZn + geom_point(aes(color=Pathway, shape=Pathway),size=1,
        y="Co",
        z="Zn")+
   theme_void()+
-  theme_showarrows()+
-  theme_hidetitles()+
-  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(-0.2, 'cm'))+
+  #theme_showarrows()+ # incompatible with new ggplot2
+  #theme_hidetitles()+
+  theme(tern.panel.mask.show = FALSE,legend.spacing.y = unit(0, 'cm'))+
   theme(tern.panel.mask.show = FALSE,legend.position = c(0.75, 1),
         legend.text = element_text(size = 9),
         legend.justification = c(0, 1), legend.box.just = "left", 
-        legend.background = element_rect(fill = "transparent", color = NA))
+        legend.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA))
 CoCuZn_formation
 
 
 ######################################## Exporting Plot #################################################
-
-# Assuming these are your ggplot objects:
-# MgFeMn_species, CoCuNi_Fe_Mn_formation, CoCuZn_formation
 
 # Arrange the plots
 combined_plot <- ggarrange(

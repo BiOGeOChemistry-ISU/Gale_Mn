@@ -130,12 +130,28 @@ Oxides <- Oxides %>%
 #GALE CRATER
 Gale <- Full_Data %>%
   filter(Pathway == "Gale crater")
+         
+# Summary statistics for Mn
+Gale %>%
+  summarise(
+    n = sum(!is.na(MnO)),
+    mean = mean(MnO, na.rm = TRUE),
+    median = median(MnO, na.rm = TRUE),
+    min = min(MnO, na.rm = TRUE),
+    Q1 = quantile(MnO, 0.25, na.rm = TRUE),
+    Q3 = quantile(MnO, 0.75, na.rm = TRUE),
+    max = max(MnO, na.rm = TRUE)
+  )
+
+# keep only top quartile MnO (Mn-enriched definition)
+Gale2 <- Gale %>%
+          filter(MnO>=0.2)
 
 #OXIDES AND CARBONATES
 Oxides_Carbonates <-bind_rows(Carbonates, Oxides)
 
 #ALL DATA
-All_Data<-bind_rows(Carbonates, Oxides, Gale)
+All_Data<-bind_rows(Carbonates, Oxides, Gale2)
 
 ########################## OXIDES normality plots ###############################
 
@@ -606,35 +622,6 @@ dev.off()
 
 ################################# Boxplots with stats for Terrestrial #####################################
 
-# First is the code to make by individual element
-
-# Create boxplot
-bxp_FwM_Co <- ggboxplot(
-  Oxides_Carbonates, x = "Pathway", y = "log_Co_M_Mn",
-  ylab = "log Co/Mn", xlab = NULL,
-  add = "jitter"
-)
-
-# Run Kruskal-Wallis test
-kruskal_result <- Oxides_Carbonates %>%
-  kruskal_test(log_Co_M_Mn ~ Pathway)
-
-# If Kruskal-Wallis is significant, run pairwise Wilcoxon post-hoc test
-if (kruskal_result$p < 0.05) {
-  posthoc <- Oxides_Carbonates %>%
-    pairwise_wilcox_test(log_Co_M_Mn ~ Pathway, p.adjust.method = "BH") %>%
-    add_significance() %>%
-    add_xy_position(x = "Pathway")
-  
-  # Add significance annotations to the plot
-  bxp_FwM_Co <- bxp_FwM_Co +
-    stat_pvalue_manual(posthoc, tip.length = 0) +
-    labs(subtitle = NULL)
-}
-
-# Display the plot
-print(bxp_FwM_Co)
-
 
 ## Function to perform Kruskal-Wallis tests on all terrestrial-only datasets and make plot(s)
 
@@ -662,10 +649,23 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
   
   # Plot
   p <- ggboxplot(
-    data, x = "Pathway", y = y_var,
-    ylab = y_label, xlab = NULL,
-    add = "jitter"
-  )
+    data, 
+    x = "Pathway", 
+    y = y_var,
+    ylab = y_label, 
+    xlab = NULL,
+    add = "jitter",
+    add.params = list(
+      shape = 1,
+      size = 1.8,
+      alpha = 0.7
+    )
+  ) +
+    theme (
+      axis.title.y = element_text(size = 8),
+      axis.text.y = element_text(size = 8),
+      axis.text.x = element_text(size = 8)
+    )
   
   kruskal_result <- data %>%
     kruskal_test(as.formula(paste(y_var, "~ Pathway")))
@@ -674,7 +674,11 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
     posthoc <- data %>%
       pairwise_wilcox_test(as.formula(paste(y_var, "~ Pathway")), p.adjust.method = "BH") %>%
       add_significance() %>%
-      add_xy_position(x = "Pathway")
+      add_xy_position(x = "Pathway",
+                      step.increase = 0.15)
+
+    posthoc <- posthoc %>%
+      filter(p.adj.signif != "ns")
     
     p <- p +
       stat_pvalue_manual(posthoc, tip.length = 0) +
@@ -721,6 +725,7 @@ plots4 <- list(
   bxp_FwM_Zn + labs(x = NULL) + theme(axis.text.x = element_text(size = 9))
 )
 
+# creats a sixth panel that is blank
 plots4_filled <- c(plots4, list(NULL))
 
 
@@ -730,7 +735,7 @@ ggarrange(plotlist = plots3,
           ncol = 2, 
           nrow = 3, 
           align = "v", 
-          labels = LETTERS[1:6],
+          labels = LETTERS[1:5],
           font.label = list(size = 12, face = "bold"),
           label.x = 0.02,
           label.y = 0.98
@@ -742,7 +747,7 @@ pdf("Terrestrial_Boxplots4.pdf", width = 8.5, height = 11)
 ggarrange(plotlist = plots4_filled, 
           ncol = 2, nrow = 3, 
           align = "v", 
-          labels = LETTERS[1:6],
+          labels = LETTERS[1:5],
           font.label = list(size = 12, face = "bold"),
           label.x = 0.02,
           label.y = 0.98
@@ -754,22 +759,23 @@ ggarrange(plotlist = plots3,
           ncol = 2, 
           nrow = 3, 
           align = "v",
-          labels = LETTERS[1:6],
-          font.label = list(size = 12, face = "bold"),
-          label.x = 0.02,
-          label.y = 0.98)
-dev.off()
-
-tiff("Terrestrial_Boxplots4.tiff", width = 8.5, height = 11, units = "in", res = 300)
-ggarrange(plotlist = plots4_filled,
-          ncol = 2, 
-          nrow = 3, 
-          align = "v",
           labels = LETTERS[1:5],
           font.label = list(size = 12, face = "bold"),
           label.x = 0.02,
           label.y = 0.98)
 dev.off()
+
+tiff("Terrestrial_Boxplots4.tiff", width = 8.5, height = 12, units = "in", res = 300)
+ggarrange(plotlist = plots4_filled,
+          ncol = 2, 
+          nrow = 3, 
+          align = "v",
+          labels = LETTERS[1:5],
+          font.label = list(size = 11, face = "bold"),
+          label.x = 0.02,
+          label.y = 0.98)
+dev.off()
+
 ################################# Boxplots with stats for all #####################################
 
 # Define the reusable function
@@ -800,13 +806,26 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
   
   # Create the boxplot
   p <- ggboxplot(
-    data, x = "Formation", y = y_var,
-    ylab = y_label, xlab = NULL,
-    add = "jitter"
-  ) #+
+    data, 
+    x = "Formation", 
+    y = y_var,
+    ylab = y_label, 
+    xlab = NULL,
+    add = "jitter",
+    add.params = list(
+      shape = 1,
+      size = 1.8,
+      alpha = 0.7
+    )
+  ) +
+    theme (
+      axis.title.y = element_text(size = 8),
+      axis.text.y = element_text(size = 8),
+      axis.text.x = element_text(size = 8)
+    )  #+
    # scale_y_log10() # Apply log10 scale to y-axis
   
-  
+
   kruskal_result <- data %>%
     kruskal_test(as.formula(paste(y_var, "~ Formation")))
   
@@ -814,8 +833,12 @@ plot_kruskal_boxplot <- function(data, y_var, y_label) {
     posthoc <- data %>%
       pairwise_wilcox_test(as.formula(paste(y_var, "~ Formation")), p.adjust.method = "BH") %>%
       add_significance() %>%
-      add_xy_position(x = "Formation")
-    
+      add_xy_position(x = "Formation",
+                      step.increase = 0.15)
+  
+    posthoc <- posthoc %>%
+      filter(p.adj.signif != "ns")
+      
     p <- p +
       stat_pvalue_manual(posthoc, tip.length = 0) +
       labs(subtitle = NULL)

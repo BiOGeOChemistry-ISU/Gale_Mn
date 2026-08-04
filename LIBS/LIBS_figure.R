@@ -82,10 +82,10 @@ Ba_614 <- ggplot(filtered_data$Ba_614, aes(x = Wavelength, y = Value, color = Ca
     plot.title = element_text(size = 8)     # Plot title
   ) +
   geom_vline(xintercept = 614.34, color = "black", linetype = "solid", size = 1) +
-  ylim(0, 0.006) +  # <-- sets y-axis from 0 to 0.005
+  ylim(0, 0.007) +  # <-- sets y-axis from 0 to 0.005
   annotate("text",
            x = 616,
-           y = 0.0058,     # adjust to top of plot
+           y = 0.0067,     # adjust to top of plot
            label = "Ba(II) 614.34 nm",
            size = 3,
            hjust = 0.5,
@@ -219,7 +219,7 @@ Zn_255 <- ggplot(filtered_data$Zn_255, aes(x = Wavelength, y = Value, color = Ca
   geom_vline(xintercept = 255.87, color = "black", linetype = "solid", size = 1) +
   annotate("text",
            x = 253.87,
-           y = 0.00048,     # adjust to top of plot
+           y = 0.00046,     # adjust to top of plot
            label = "Zn(II) 255.87 nm",
            size = 3,
            hjust = 0.5,
@@ -244,13 +244,13 @@ df2_filtered <- df2_filtered %>%
 
 # define legend labels
 formation_labels <- c(
-  "Carbonates" = "Mn carbonates",
-  "Freshwater" = "Mn (oxyhydr)oxides"
+  "Carbonates" = "carbonates",
+  "Freshwater" = "(oxyhydr)oxides"
 )
 
 
 Sr <- ggplot(df2_filtered, aes(x = Formation, y = Sr, fill = Formation)) +
-  geom_violin(trim = FALSE, alpha = 0.4) +
+  geom_boxplot(width = 0.5, alpha = 0.5, outlier.shape = NA) +
   geom_jitter(aes(color = Formation), width = 0.1, alpha = 0.6) +
   labs(x = NULL,
        y = "Sr (ppm)") +
@@ -284,7 +284,7 @@ Sr
 
 
 Zn <- ggplot(df2_filtered, aes(x = Formation, y = Zn, fill = Formation)) +
-  geom_violin(trim = FALSE, alpha = 0.4) +
+  geom_boxplot(width = 0.5, alpha = 0.5, outlier.shape = NA) +
   geom_jitter(aes(color = Formation), width = 0.1, alpha = 0.6) +
   labs(x = NULL,
        y = "Zn (ppm)") +
@@ -317,7 +317,7 @@ Zn <- ggplot(df2_filtered, aes(x = Formation, y = Zn, fill = Formation)) +
 Zn
 
 Ba <- ggplot(df2_filtered, aes(x = Formation, y = Ba, fill = Formation)) +
-  geom_violin(trim = FALSE, alpha = 0.4) +
+  geom_boxplot(width = 0.5, alpha = 0.5, outlier.shape = NA) +
   geom_jitter(aes(color = Formation), width = 0.1, alpha = 0.6) +
   labs(x = NULL,
        y = "Ba (ppm)") +
@@ -362,6 +362,7 @@ plots <- ggarrange(
   ncol = 3, nrow = 3,
   heights = c(0.8, 1.2, 1.2),
   legend = FALSE,
+  align = "hv",
   font.label = list(size = 10, face = "bold"),
   label.x = 0.2,   # move to left
   label.y = 0.98    # inside top
@@ -371,8 +372,8 @@ plots <- ggarrange(
 # Combine plots and legend at bottom-right
 big_plot <- ggdraw() +
   draw_plot(plots, 0, 0, 1, 1) +
-  draw_label("Mn (oxyhydr)oxides", x = 0.8, y = 0.25, size = 12, color = "#404788FF", fontface = "bold") +
-  draw_label("Mn carbonates", x = 0.8, y = 0.2, size = 12, color = "#E64B35FF", fontface = "bold") +
+  draw_label("Mn (oxyhydr)oxides", x = 0.85, y = 0.25, size = 14, color = "#404788FF", fontface = "bold") +
+  draw_label("Mn carbonates", x = 0.85, y = 0.2, size = 14, color = "#E64B35FF", fontface = "bold") +
   draw_plot(legend, 0.7, 0.02, 0.3, 0.15)   # Adjust position and size
 
 big_plot
