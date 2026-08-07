@@ -194,7 +194,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 2.\n",
+       "Supplementary Figure 1.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles\n",
        "per kg Mn and trace elements\n",
@@ -251,7 +251,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 2.\n",
+       "Supplementary Figure 1.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles\n",
        "per kg Mn and trace elements\n",
@@ -309,7 +309,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 3.\n",
+       "Supplementary Figure 2.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
@@ -366,7 +366,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 3.\n",
+       "Supplementary Figure 2.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
@@ -428,7 +428,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 4.\n",
+       "Supplementary Figure 3.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
@@ -484,7 +484,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 4.\n",
+       "Supplementary Figure 3.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
@@ -527,7 +527,7 @@ labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
 for (i in seq_along(vars)) {
   var <- vars[i]
   label <- labels[i]
-  data <- as.numeric(Oxides_Freshwater[[var]])  # Ensure numeric
+  data <- as.numeric(Oxides_Marine[[var]])  # Ensure numeric
   
   # Run Shapiro-Wilk test
   test <- shapiro.test(data)
@@ -546,7 +546,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 5.\n",
+       "Supplementary Figure 4.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
@@ -583,7 +583,7 @@ labels <- c("log Ba/Mn", "log Co/Mn", "log Cu/Mn", "log Fe/Mn",
 for (i in seq_along(vars)) {
   var <- vars[i]
   label <- labels[i]
-  data <- as.numeric(Oxides_Freshwater[[var]])  # Ensure numeric
+  data <- as.numeric(Oxides_Marine[[var]])  # Ensure numeric
   
   # Run Shapiro-Wilk test
   test <- shapiro.test(data)
@@ -602,7 +602,7 @@ for (i in seq_along(vars)) {
 plot.new()
 text(x = 0.05, y = 0.95, adj = c(0, 1), cex = 1.0, family = "sans",
      labels = paste(
-       "Supplementary Figure 5.\n",
+       "Supplementary Figure 4.\n",
        "Shapiro-Wilk test for the log\n",
        "normal distribution of moles per\n",
        "kg Mn and trace elements\n",
